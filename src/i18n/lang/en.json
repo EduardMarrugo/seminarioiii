@@ -1,0 +1,11 @@
+{
+    "title": {
+        "app":"Seminario III"
+    },
+    "dashboard_opc":{
+        "home": "Home",
+        "emergency_contacts": "Emergency contacts",
+        "profile": "Profile",
+        "history": "Historial"
+    }
+}
