@@ -38,7 +38,7 @@ const routes = [
       {
         path: 'history',
         name: 'history',
-        component: () => import('../views/userAuth/profile.vue'),
+        component: () => import('../views/userAuth/history.vue'),
         props: {}
       },
 

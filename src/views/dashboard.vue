@@ -2,7 +2,6 @@
   <div>
     <v-container fluid>
       <v-row align="center">
-        <v-btn @click="showAlert">Hola</v-btn>
         <v-col>
           <router-view />
         </v-col>
@@ -13,23 +12,28 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import Swal from 'sweetalert2'
-import 'sweetalert2/dist/sweetalert2.css'
+
 export default {
   data() {
     return {
       time: null,
       var: null,
+      
     };
   },
   methods: {
     ...mapActions("session", ["LOG_OUT", "RECOVERY_SESSION"]),
-    current_time(d) {
-      alert("Hola mama bivho");
+    alert_biodisaster(d) {
+      const Swal = this.$swal;
+      Swal.fire({
+        icon: "alert",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
     },
     showAlert() {
       // Use sweetalert2
-      Swal.fire('Hello Vue world!!!');
+      Swal.fire("Hello Vue world!!!");
     },
   },
   computed: {
@@ -54,12 +58,15 @@ export default {
   },
   created: function () {
     this.var = setInterval(() => {
-      this.current_time();
-    }, 100000000);
+      const Swal = this.$swal;
+      Swal.fire({
+        icon: "warning",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
+    }, 40000);
   },
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

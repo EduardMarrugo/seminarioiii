@@ -6,5 +6,6 @@
         "home": "Inicio",
         "emergency_contacts": "Contactos de emergencia",
         "profile": "Perfil"
-    }
+    },
+    "user_does_not_exist": "Usuario no existe"
 }

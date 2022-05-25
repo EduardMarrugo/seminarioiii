@@ -11,7 +11,8 @@
               form</v-toolbar-title
             >
           </v-toolbar>
-          <v-card-text>
+
+          <v-card-text v-if="isGuest == false">
             <form
               ref="form"
               @submit.prevent="isRegister ? register() : logIn()"
@@ -44,6 +45,7 @@
                 required
               ></v-text-field>
               <div class="red--text">{{ errorMessage }}</div>
+
               <v-btn
                 type="submit"
                 class="mt-4"
@@ -53,9 +55,50 @@
                   isRegister ? stateObj.register.name : stateObj.login.name
                 }}</v-btn
               >
+
+              <v-btn class="mt-4" color="primary" value="log in" @click="isGuest = true" v-if="isRegister == false">{{
+                stateObj.guestAccess.name
+              }}</v-btn>
+
               <div
                 class="grey--text mt-4"
                 v-on:click="isRegister = !isRegister"
+              >
+                {{ toggleMessage }}
+              </div>
+            </form>
+          </v-card-text>
+          <v-card-text v-else>
+            <form ref="form" @submit.prevent="guestLogin()">
+              <v-text-field
+                v-model="session_data.username"
+                name="username"
+                label="Username"
+                type="text"
+                placeholder="username"
+                required
+              ></v-text-field>
+
+              <v-text-field
+                v-model="session_data.password"
+                name="password"
+                label="Password"
+                type="password"
+                placeholder="password"
+                required
+              ></v-text-field>
+
+              <div class="red--text">{{ errorMessage }}</div>
+              <v-btn
+                type="submit"
+                class="mt-4"
+                color="primary"
+                value="log in"
+                >{{ stateObj.guestAccess.name }}</v-btn
+              >
+              <div
+                class="grey--text mt-4"
+                v-on:click="isRegister = !isRegister, isGuest = false;"
               >
                 {{ toggleMessage }}
               </div>
@@ -69,38 +112,45 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+
 export default {
   name: "App",
   data() {
     return {
       session_data: {
-        username: "",
-        password: "",
+        username: "ANDREE",
+        password: "123",
       },
       confirmPassword: "",
+      isGuest: false,
       isRegister: false,
       errorMessage: "",
       stateObj: {
         register: {
-          name: "Register",
-          message: "Aleady have an Acoount? login.",
+          name: "Resgistrarse",
+          message: "¿Ya tienes un cuenta? Inicia sesión.",
         },
         login: {
-          name: "Login",
-          message: "Register",
+          name: "Iniciar sesión",
+          message: "Registrarse.",
+        },
+        guestAccess: {
+          name: "Ingresar como invitado",
+          message: "Iniciar sesión.",
         },
       },
     };
   },
   methods: {
     ...mapActions("session", ["LOG_IN"]),
+    ...mapActions("db_simulator", ["ADD_USER"]),
     logIn() {
-      // const { DASHBOARD } = this.VIEWS,
-      //   { username } = this.session_data;
-
-      this.LOG_IN(this.session_data);
-
-      //this.replaceRouteWithParams(DASHBOARD, { username: username });
+      const Swal = this.$swal;
+      if (typeof this.GET_USER(this.session_data) == "undefined") {
+        Swal.fire(this.$t("user_does_not_exist"));
+      } else {
+        this.LOG_IN(this.session_data);
+      }
     },
     register() {
       if (this.password == this.confirmPassword) {
@@ -111,9 +161,11 @@ export default {
         this.errorMessage = "password did not match";
       }
     },
+    guestLogin: function () {},
   },
   computed: {
     ...mapGetters("session", ["GET_TOKEN_SESSION", "GET_DATA_SESSION"]),
+    ...mapGetters("db_simulator", ["GET_USER"]),
     toggleMessage: function () {
       return this.isRegister
         ? this.stateObj.register.message
@@ -125,7 +177,6 @@ export default {
       this.GET_TOKEN_SESSION.username == "" &&
       this.GET_DATA_SESSION.password == ""
     ) {
-      
     }
   },
 };
